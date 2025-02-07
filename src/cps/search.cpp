@@ -30,6 +30,11 @@ namespace cps::search {
 
         using version::to_string;
 
+        struct Component {
+            std::string name;
+            bool link_only;
+        };
+
         /// @brief A CPS file, along with the components in that CPS file to
         /// load
         class Dependency {
@@ -39,7 +44,7 @@ namespace cps::search {
             /// @brief The loaded CPS file
             loader::Package package;
             /// @brief the components from that CPS file to use
-            std::vector<std::string> components;
+            std::vector<Component> components;
         };
 
         /// @brief A DAG node
@@ -388,27 +393,40 @@ namespace cps::search {
         /// @param node The node to process
         /// @param components the components required from this node
         void set_components(std::shared_ptr<Node> node, const std::vector<std::string> & components,
-                            bool default_components) {
-            // Set the components that this package's depndees want
+                            bool default_components, bool link_only = false) {
+            // Set the components that this package's dependees want
             if (default_components && node->data.package.default_components) {
                 const std::vector<std::string> & defs = node->data.package.default_components.value();
-                node->data.components.insert(node->data.components.end(), defs.begin(), defs.end());
+                std::transform(defs.begin(), defs.end(), std::back_insert_iterator(node->data.components),
+                               [link_only](std::string name) {
+                                   return Component{.name = std::move(name), .link_only = link_only};
+                               });
             }
-            node->data.components.insert(node->data.components.end(), components.begin(), components.end());
+            std::transform(
+                components.begin(), components.end(), std::back_insert_iterator(node->data.components),
+                [link_only](std::string name) { return Component{.name = std::move(name), .link_only = link_only}; });
 
-            for (const std::string & c_name : node->data.components) {
+            for (const Component & comp : node->data.components) {
                 // It's possible that the Package::Requires section listed
                 // dependencies we don't actually need. If we don't need them we
                 // can trim the graph
                 std::vector<std::shared_ptr<Node>> trimmed;
 
                 // This *should* be validated such that we won't have an exception
-                const loader::Component & component = node->data.package.components.at(c_name);
+                const loader::Component & component = node->data.package.components.at(comp.name);
                 auto && required = process_requires(component.require);
                 for (std::shared_ptr<Node> & child : node->depends) {
                     if (auto && child_comps = required.find(child->data.package.name); child_comps != required.end()) {
                         trimmed.emplace_back(child);
-                        set_components(child, child_comps->second.components, child_comps->second.defaults);
+                        set_components(child, child_comps->second.components, child_comps->second.defaults, link_only);
+                    }
+                }
+                auto && link_required = process_requires(component.link_requires);
+                for (std::shared_ptr<Node> & child : node->depends) {
+                    if (auto && child_comps = link_required.find(child->data.package.name);
+                        child_comps != link_required.end()) {
+                        trimmed.emplace_back(child);
+                        set_components(child, child_comps->second.components, child_comps->second.defaults, true);
                     }
                 }
                 node->depends = trimmed;
@@ -417,10 +435,15 @@ namespace cps::search {
                     // Don't insert these twice
                     if (!default_components && self->second.defaults && node->data.package.default_components) {
                         const std::vector<std::string> & defs = node->data.package.default_components.value();
-                        node->data.components.insert(node->data.components.end(), defs.begin(), defs.end());
+                        std::transform(defs.begin(), defs.end(), std::back_insert_iterator(node->data.components),
+                                       [link_only](std::string name) {
+                                           return Component{.name = std::move(name), .link_only = link_only};
+                                       });
                     }
-                    node->data.components.insert(node->data.components.end(), self->second.components.begin(),
-                                                 self->second.components.end());
+                    std::transform(self->second.components.begin(), self->second.components.end(),
+                                   std::back_insert_iterator(node->data.components), [link_only](std::string name) {
+                                       return Component{.name = std::move(name), .link_only = link_only};
+                                   });
                 }
             }
         }
@@ -470,12 +493,12 @@ namespace cps::search {
                 return s;
             };
 
-            for (const auto & c_name : node->data.components) {
+            for (const Component & cps_comp : node->data.components) {
                 // We should have already errored if this is not the case
-                auto && f = node->data.package.components.find(c_name);
+                auto && f = node->data.package.components.find(cps_comp.name);
                 utils::assert_fn(
                     f != node->data.package.components.end(),
-                    fmt::format("Could not find component {} of package {}", c_name, node->data.package.name));
+                    fmt::format("Could not find component {} of package {}", cps_comp.name, node->data.package.name));
                 auto && comp = f->second;
 
                 // Convert prefix at this point because:
@@ -483,14 +506,17 @@ namespace cps::search {
                 // from
                 // 2. if we do it at the search point we have to plumb overrides
                 // deep into that
-                merge_result<loader::KnownLanguages, std::string>(comp.includes, result.includes, prefix_replacer);
-                merge_result(comp.definitions, result.definitions);
-                merge_result(comp.compile_flags, result.compile_flags);
+                if (!cps_comp.link_only) {
+                    merge_result<loader::KnownLanguages, std::string>(comp.includes, result.includes, prefix_replacer);
+                    merge_result(comp.definitions, result.definitions);
+                    merge_result(comp.compile_flags, result.compile_flags);
+                }
                 merge_result(comp.link_libraries, result.link_libraries);
                 merge_result(comp.link_flags, result.link_flags);
                 if (comp.type != loader::Type::interface) {
                     if (!comp.location) {
-                        return tl::make_unexpected(fmt::format("Component `{}` requires 'location' attribute", c_name));
+                        return tl::make_unexpected(
+                            fmt::format("Component `{}` requires 'location' attribute", cps_comp.name));
                     }
                     result.link_location.emplace_back(
                         prefix_replacer(comp.link_location.value_or(comp.location.value())));

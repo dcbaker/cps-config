@@ -67,6 +67,12 @@
             "requires": [
                 "minimal:sample0"
             ]
+        },
+        "link-requires": {
+            "type": "interface",
+            "link_requires": [
+                "minimal:sample1"
+            ]
         }
     },
     "default_components": [
