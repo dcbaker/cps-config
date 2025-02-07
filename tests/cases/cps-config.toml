@@ -121,3 +121,15 @@ name = "Star components override by name"
 cps = "full"
 args = ["flags", "--component", "star_values_override", "--cflags", "--print-errors"]
 expected = "-fvectorize -I/usr/local/include -I/opt/include -DBAR=2 -DFOO=1 -DOTHER"
+
+[[case]]
+name = "requires component from self"
+cps = "full"
+args = ["flags", "--component", "requires-self-helper", "--cflags", "--print-errors"]
+expected = "-fvectorize -I/usr/local/include -I/opt/include -DBAR=2 -DFOO=1 -DOTHER"
+
+[[case]]
+name = "requires component from self nested"
+cps = "full"
+args = ["flags", "--component", "requires-self", "--cflags", "--print-errors"]
+expected = "-fvectorize -I/usr/local/include -I/opt/include -DBAR=2 -DFOO=1 -DOTHER"
