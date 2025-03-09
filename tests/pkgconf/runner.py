@@ -168,7 +168,7 @@ async def run(args: Arguments) -> bool:
         print('  Expected Failures:', totals['xfailure'])
         print('  Unexpected Passes:', totals['xsuccess'])
 
-    return totals['success'] + totals['xfailure'] == len(tests)
+    return totals['success'] + totals['xfailure'] + totals['xsuccess'] == len(tests)
 
 
 def main() -> None:

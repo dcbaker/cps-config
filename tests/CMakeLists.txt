@@ -58,3 +58,5 @@ add_test(
     ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/runner.py
     $<TARGET_FILE:cps-config> ${CMAKE_CURRENT_SOURCE_DIR}/cases/cps-prefix-calculation.toml --libdir "${CMAKE_INSTALL_LIBDIR}" --prefix ${PROJECT_BINARY_DIR}
 )
+
+add_subdirectory(pkgconf)

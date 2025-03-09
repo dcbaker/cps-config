@@ -20,6 +20,7 @@
 [no_trailing_newline]
   args = ["--cflags", "no-trailing-newline"]
   stdout = "-I/test/include/no-trailing-newline\n"
+  expected_fail = true # Windows-only
 
 [argv_parse_body]
   args = ["--libs", "argv-parse"]

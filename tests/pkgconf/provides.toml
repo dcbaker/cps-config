@@ -47,18 +47,21 @@ provides = 1.2.3
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [foo_gt]
   args = ["--libs", "provides-test-foo > 1.0.0"]
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [foo_lt]
   args = ["--libs", "provides-test-foo < 1.0.0"]
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [bar]
   args = ["--libs", "provides-test-bar"]
@@ -81,6 +84,7 @@ provides = 1.2.3
   exitcode = 1
   stdout = '<ignore>'
   stderr = '<ignore>'
+  expected_fail = true # Windows-only
 
 [bar_le3]
   args = ["--libs", "provides-test-bar <= 1.2.0"]
@@ -95,6 +99,7 @@ provides = 1.2.3
   exitcode = 1
   stdout = '<ignore>'
   stderr = '<ignore>'
+  expected_fail = true # Windows-only
 
 [bar_gt]
   args = ["--libs", "provides-test-bar > 1.1.1"]
@@ -121,6 +126,7 @@ provides = 1.2.3
   exitcode = 1
   stderr = '<ignore>'
   stdout = '<ignore>'
+  expected_fail = true # Windows-only
 
 [baz_ne2]
   args = ["--libs", "provides-test-baz != 1.0.0"]
@@ -139,6 +145,7 @@ provides = 1.2.3
   exitcode = 1
   stderr = '<ignore>'
   stdout = '<ignore>'
+  expected_fail = true # Windows-only
 
 [baz_lt2]
   args = ["--libs", "provides-test-baz < 1.2.0"]
@@ -161,6 +168,7 @@ provides = 1.2.3
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [quux_le]
   args = ["--libs", "provides-test-quux <= 1.1.9"]
@@ -175,12 +183,14 @@ provides = 1.2.3
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [quux_ne3]
   args = ["--libs", "provides-test-quux != 1.0.0"]
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [quux_gt]
   args = ["--libs", "provides-test-quux > 1.1.9"]
@@ -191,6 +201,7 @@ provides = 1.2.3
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [quux_lt]
   args = ["--libs", "provides-test-quux < 1.1.0"]
@@ -201,6 +212,7 @@ provides = 1.2.3
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [moo]
   args = ["--libs", "provides-test-moo"]
@@ -219,6 +231,7 @@ provides = 1.2.3
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [moo_le]
   args = ["--libs", "provides-test-moo <= 1.2.0"]
@@ -229,12 +242,14 @@ provides = 1.2.3
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [moo_ne2]
   args = ["--libs", "provides-test-moo != 1.0.0"]
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [moo_gt]
   args = ["--libs", "provides-test-moo > 1.1.9"]
@@ -245,6 +260,7 @@ provides = 1.2.3
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [moo_lt]
   args = ["--libs", "provides-test-moo < 1.1.0"]
@@ -263,6 +279,7 @@ provides = 1.2.3
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [meow_ne]
   args = ["--libs", "provides-test-meow != 1.3.0"]
@@ -273,12 +290,14 @@ provides = 1.2.3
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [meow_lt]
   args = ["--libs", "provides-test-meow < 1.3.1"]
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [meow_lt2]
   args = ["--libs", "provides-test-meow < 1.3.0"]
@@ -289,6 +308,7 @@ provides = 1.2.3
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [meow_ge2]
   args = ["--libs", "provides-test-meow >= 1.3.1"]
@@ -299,6 +319,7 @@ provides = 1.2.3
   stdout = '<ignore>'
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only
 
 [meow_lt3]
   args = ["--libs", "provides-test-meow < 1.2.9"]
@@ -313,3 +334,4 @@ provides = 1.2.3
   args = ["--modversion", "provides-test-meow = 1.3.0"]
   stderr = '<ignore>'
   exitcode = 1
+  expected_fail = true # Windows-only

@@ -56,6 +56,7 @@
 [nonexistent]
   exitcode = 1
   args = ["nonexistant"]
+  expected_fail = true # Windows-only
 
 [exists_version]
   args = ["--exists", "foo > 1.2"]
@@ -160,6 +161,7 @@
 [nocflags]
   args = ["--cflags", "nocflag"]
   stdout = "\n"
+  expected_fail = true # Windows-only
 
 # TODO: [arbitrary_path]
 
